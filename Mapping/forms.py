@@ -5,7 +5,10 @@ from Mapping.models import *
 from Registration.models import *
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
-
+class Newform():
+    
+    
+    
 class AcademicyearClassRelationForm(forms.ModelForm):
     AcademicYear = AcademicYear.objects.all()
     class_id = forms.ModelMultipleChoiceField(queryset=ClassDetails.objects.all(), widget=FilteredSelectMultiple("ClassDetails", is_stacked=False))
