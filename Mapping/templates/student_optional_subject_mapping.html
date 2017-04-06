@@ -1,0 +1,372 @@
+{% extends "index.html" %}
+
+<html lang="">
+
+    
+         {%block styleBlock%}
+     <style>
+     table ,tr td{
+    border:1px solid red
+}
+@media (min-width: 992px)
+.col-md-6 {
+    width: 45%;
+}
+
+
+.form-control {
+    width: 75%;
+    height: 34px;
+    padding: 20px 12px;
+    background-color: #fff;
+    border: 1px solid #c2cad8;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+
+#ms-id_subject_name
+{
+    margin-left: 129px;
+}
+
+#ms-id_student_name
+{
+margin-left: 70px;
+}
+tbody {
+    display:block;
+    height:184px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+table {
+    width:400px;
+}
+     </style>
+        {%endblock%}
+ {%block ScriptBlock%}
+<script>
+window.onload = function() {
+	  //YOUR JQUERY CODE
+	$(document).ready(function() {
+		console.log("hiiii")
+		/*$("#id_class_name").change(function() {
+			var foo = []; 
+			$('#id_class_name :selected').each(function(i, selected){ 
+			  foo[i] = $(selected).val(); 
+			  
+			  console.log(foo[i])
+			class_name =  foo[i] 
+			
+			
+			
+			var url = '/school/viewSectionDetail/';
+		viewSectionDetail(url,class_name)	
+		
+			});
+				
+			
+		});*/
+		
+		
+		$("#filter").click(function() {
+			  console.log("in filter")
+			 
+			  var MyProject = {};
+				var url = '/school/viewFilteredStudent/';
+			  
+			  section_name = document.getElementById("id_section_name").value
+				religion = document.getElementById("id_religion").value
+				
+				class_name = $("#id_class_name option:selected").map(function(){ return this.value }).get()
+				
+				section_name = $("#id_section_name option:selected").map(function(){ return this.value }).get()
+				religion = $("#id_religion option:selected").map(function(){ return this.value }).get()
+				nationality = $("#id_nationality option:selected").map(function(){ return this.value }).get()
+				//console.log("name is;;;;;;;;;;;;;;",$("#id_class_name option:selected").map(function(){ return this.value }).get())
+					console.log("class_name",class_name)
+					console.log("section_name",section_name)
+					console.log("religion",religion)
+					console.log("nationality",nationality)
+					
+				
+				viewFilteredStudent(url,class_name,section_name,religion ,nationality)				
+				
+				
+			});
+		 $('#id_subject_name').multiSelect({
+		      afterSelect: function(values){
+		        //alert("Select value: "+values);
+		      },
+		      afterDeselect: function(values){
+		        //alert("Deselect value: "+values);
+		      }
+		    }); 
+		
+
+		
+		 $('#id_student_name').multiSelect({
+		      afterSelect: function(values){
+		        //alert("Select value: "+values);
+		      },
+		      afterDeselect: function(values){
+		        //alert("Deselect value: "+values);
+		      }
+		    }); 
+		
+	});
+	
+	  
+	  
+function viewFilteredStudent(url,class_name,section_name,religion , nationality)	 {
+	    
+		$.ajax({
+			url : url,
+			type : "GET",
+			data : {
+				class_name : class_name,
+				section_name : section_name,
+				religion : religion,
+				nationality : nationality
+			},
+			
+		})
+
+		.done(
+				function(data) {
+					console.log(data[0]);
+					$('#ms-id_student_name .ms-selectable .ms-list li').each(function(i){
+					    value2 = $(this).text();
+					    $(this).hide();
+					    
+					    for (var i = 0; i < data.length; i++) {
+							
+							
+					    	if (data[i] == value2)
+					    		
+					    		{
+					    		
+					    		if($(this).text(value2)){
+					    			$(this).show();
+					    		}
+					    		
+					    		
+					    		}
+							
+						}
+
+					   
+					});
+					
+						
+
+				});
+	  
+	
+	}
+	function viewSectionDetail(url ,class_name) {
+	    
+		$.ajax({
+			url : url,
+			type : "GET",
+			data : {
+				class_name : class_name
+			},
+		})
+
+		.done(
+				function(data) {
+					console.log(data);
+					
+					
+					
+				        for (var i = 0; i < data.length; i++)
+
+						{
+
+							/* console.log(data[i].apartment_flat_no) */
+							/* $('#id_apartment_flat_no').empty(); */
+
+							$('#id_section_name').append(
+									'<option value="'+data[i].id+'">'
+											+ data[i].section + '</option>')
+
+							/* $('#id_apartment_flat_no1-'+(i)+'-apartment_flat_no').val(data[i].apartment_flat_no);
+							 */
+						}
+						
+						
+
+				});
+	  
+	
+	}
+}
+</script>
+{%endblock%}  
+{% block content %}
+<body>
+ 
+<div class="page-bar" style="margin-bottom: 1px;">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="{% url 'Registration:home' %}">Home</a> 
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                
+                                <a href="{% url 'Registration:academic_school_view' %}">   Academic & School</a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            
+                            <li>
+                                <span>Student/Subject Mapping</span>
+                            </li>
+                        </ul>
+                        
+                    </div> 
+
+
+
+
+
+    <div class="portlet light portlet-fit portlet-form ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-red"></i>
+                                        <span class="caption-subject font-red sbold uppercase">Student & Subject Mapping</span>
+                                    </div>
+                                   
+                                </div>
+                                <div class="portlet-body">
+                                
+                                
+                                        
+                                <div class="row" style="margin-left: 14px;">
+                                            
+                                                
+                                                <div class="col-md-2">
+                                                <h4> Select Class  </h4>
+
+                                                   
+                                                    <div>
+                                                    
+                                                    {{ StudentOptionalSubjectMappingForm.class_name }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                <h4>Select Section  </h4>
+                                                   
+                                                    <div>
+                                                    {{ StudentOptionalSubjectMappingForm.section_name }}
+                                                    </div>
+                                                </div>
+
+                                                
+                                                 <div class="col-md-2">
+                                                <h4>Enter Religion  </h4>
+                                                   
+                                                  <div>
+                                                    {{ StudentOptionalSubjectMappingForm.religion }}
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                                <div class="col-md-2">
+                                                <h4>Enter Nationality  </h4>
+                                                   
+                                                <div>
+                                                    {{ StudentOptionalSubjectMappingForm.nationality  }}
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                             <div class="">
+                                                <button id = "filter" type="buttom" style="margin-top: 37px; width: 124px;" class="btn green">
+		GO </button>
+                                            </div>
+                                                
+                                             </div>   
+                                             
+                                             
+                               <br><br>
+                                    <!-- BEGIN FORM-->
+                                      <form  method="post" action="{% url 'Mapping:studentSubjectMapping' %}">
+				{% csrf_token %}
+                                        <div class="form-body">
+                                            
+                                            <div class="row">
+                                            <div class="" style="margin-left: -123px;">
+                                          
+                                               
+                                                <div class="col-md-6">
+                                                   {{ StudentOptionalSubjectMappingForm.subject_name }} </div>
+                                            </div>
+                                            <div class="" >
+                                          
+                                               
+                                                <div class="col-md-6">
+                                                   {{ StudentOptionalSubjectMappingForm.student_name }} </div>
+                                            </div>
+                                           
+                                            </div>
+                                         
+                                            <div class="col-md-6" style="margin-top: 5%;">
+                            <!-- BEGIN BORDERED TABLE PORTLET-->
+                           
+                            <!-- END BORDERED TABLE PORTLET-->
+                        </div>
+                                            
+                                       
+                                            
+                                            
+                               
+                               
+                                </div>
+                            </div>
+                            
+                             <div class="">
+                                                <button type="submit" style="margin-left: -52px;width: 124px;" class="btn green">
+		Mapping </button>
+
+
+
+                                                
+
+
+
+                                            </div>
+
+
+
+
+
+
+
+
+                                            <div></div>
+                                             
+                                    </form>
+                                     </div>
+                                    <!-- END FORM-->
+                              
+                                </html>
+ 
+  
+                                
+                                {% endblock %}    
+                            </div>

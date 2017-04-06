@@ -1,0 +1,145 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+       
+
+ {%block styleBlock%}
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+      
+        <link href="{% static 'assets/global/plugins/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css' %}" rel="stylesheet" type="text/css" />
+        
+       
+         </head>
+    <!-- END HEAD -->
+    
+   
+    {%endblock%}
+    
+{%block ScriptBlock%} 
+
+<script>
+window.setTimeout(function() 
+{
+    $(".alert").fadeTo(500, 0).slideUp(500, function()
+    {
+        $(this).remove(); 
+    });
+}, 4000);
+
+</script>
+
+{%endblock%}
+
+ {% block content %}
+<div class="page-bar">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="{% url 'home' %}">Home</a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                <span>Mapping</span>
+                            </li>
+                        </ul>
+</div>
+ 
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert" style="color: black;" >{{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    </div>
+{% endfor %}
+
+                            <!-- BEGIN VALIDATION STATES-->
+                    <div class="portlet light ">
+                           <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="icon-bubble font-green-sharp"></i>
+                                    <span class="caption-subject font-green-sharp sbold">Mapping</span>
+                                </div>
+                          
+                            </div>
+
+                       
+
+                        <div class="portlet-body">
+
+
+                            <div class="tiles">
+                               
+                                <a href="{% url 'Mapping:classAcedemicyear' %}">
+                               <div class="tile double bg-red-sunglo">
+                                    <div class="tile-body">
+                                        <i class="icon-calendar"></i>
+                                        <!--<img src="../assets/pages/media/profile/photo1.jpg" alt="">-->
+                                       <!-- <h4>Announcements</h4>
+                                        <p> Easily style icon color, size, shadow, and anything that's possible with CSS. </p>-->
+                                    </div>
+                                    <div class="tile-object">
+                                        <div class="name"> <h4>ClassAcademicMapping<h4></div>
+                                        <!--<div class="number"> 24 Jan 2013 </div>-->
+                                    </div>
+                                </div>
+                                
+                              </a>
+
+                               <a href="{% url 'Mapping:sectionClass' %}">
+                               <div class="tile double bg-green-turquoise">
+                                    <div class="tile-body">
+                                        <i class="icon-calendar"></i>
+                                        <!--<img src="../assets/pages/media/profile/photo1.jpg" alt="">-->
+                                       <!-- <h4>Announcements</h4>
+                                        <p> Easily style icon color, size, shadow, and anything that's possible with CSS. </p>-->
+                                    </div>
+                                    <div class="tile-object">
+                                        <div class="name"> <h4>SectionClassMapping<h4></div>
+                                        <!--<div class="number"> 24 Jan 2013 </div>-->
+                                    </div>
+                                </div>
+                                
+                              </a>
+
+                               <a href="{% url 'Mapping:subjectClass' %}">
+                                <div class="tile double bg-yellow-lemon">
+                                    <div class="tile-body">
+                                        <i class="icon-calendar"></i>
+                                        <!--<img src="../assets/pages/media/profile/photo1.jpg" alt="">-->
+                                       <!-- <h4>Announcements</h4>
+                                        <p> Easily style icon color, size, shadow, and anything that's possible with CSS. </p>-->
+                                    </div>
+                                    <div class="tile-object">
+                                        <div class="name"> <h4>SubjectClassMapping<h4></div>
+                                        <!--<div class="number"> 24 Jan 2013 </div>-->
+                                    </div>
+                                </div>
+                                
+                              </a>
+
+                               <a href="{% url 'Mapping:roleUser' %}">
+                                <div class="tile double-down bg-purple-intense" style="height: 135px !important;width: 280px !important;">
+                                    <div class="tile-body">
+                                        <i class="icon-calendar"></i>
+                                        <!--<img src="../assets/pages/media/profile/photo1.jpg" alt="">-->
+                                       <!-- <h4>Announcements</h4>
+                                        <p> Easily style icon color, size, shadow, and anything that's possible with CSS. </p>-->
+                                    </div>
+                                    <div class="tile-object">
+                                        <div class="name"> <h4>RoleUSerMapping<h4></div>
+                                        <!--<div class="number"> 24 Jan 2013 </div>-->
+                                    </div>
+                                </div>
+                                
+                              </a>
+
+                             
+                               
+                          
+                            </div>
+                        </div>
+                    </div>
+                            <!-- END VALIDATION STATES-->
+                     
+                      
+         {% endblock %}           
+                        

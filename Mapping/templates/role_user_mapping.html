@@ -1,0 +1,222 @@
+{% extends "index.html" %}
+
+<html lang="">
+
+    
+         {%block styleBlock%}
+     <style>
+     table ,tr td{
+    border:1px solid red
+}
+tbody {
+    display:block;
+    height:184px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+table {
+    width:400px;
+}
+     </style>
+        {%endblock%}
+ {%block ScriptBlock%}
+<script>
+window.onload = function() {
+	  //YOUR JQUERY CODE
+	$(document).ready(function() {
+		console.log("hiiii")
+		
+		$("#id_role_name").change(function() {
+			
+			 
+		       
+					console.log("in id_role_name year ajax")
+					role_name = document.getElementById("id_role_name").value
+					console.log(role_name)		
+							
+					var url = '/school/viewMultiselectUserList/';
+					viewMultiselectUserList(url,role_name)
+				});
+		
+		
+
+		
+		 $('#id_user_name').multiSelect({
+		      afterSelect: function(values){
+		        //alert("Select value: "+values);
+		      },
+		      afterDeselect: function(values){
+		        //alert("Deselect value: "+values);
+		      }
+		    }); 
+		
+	});
+	function viewMultiselectUserList(url,role_name) {
+		 
+		 
+	      
+		$.ajax({
+			url : url,
+			type : "GET",
+			data : {
+				role_name : role_name
+			},
+		})
+
+
+		.done(
+				function(data) {
+					console.log(data)
+					$('.user').empty();
+					$('.ms-selectable .ms-list li').show();
+					$('.ms-list li').each(function(i){
+					    value2 = $(this).text();
+					    
+					    for (var i = 0; i < data.length; i++) {
+							
+							
+					    	if (data[i].email == value2)
+					    		
+					    		{
+					    		
+					    		if($(this).text(value2)){
+					    			$(this).hide();
+					    		}
+					    		
+					    		
+					    		}
+							
+						}
+
+					   
+					});
+					
+					for (var i = 0; i < data.length; i++) {
+						
+						
+						$(".user").append('<tr><td>' + data[i].email + '</td></tr>');	
+						
+					}
+
+
+				});
+	}
+	
+	}
+</script>
+{%endblock%}  
+{% block content %}
+<body>
+ 
+
+<div class="page-bar" style="margin-bottom: 1px;">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="{% url 'Registration:home' %}">Home</a> 
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                
+                                <a href="{% url 'Registration:manage_details' %}">Manage Users</a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            
+                            <li>
+                                <span>Role/User Mapping</span>
+                            </li>
+                        </ul>
+                        
+                    </div> 
+
+
+
+    <div class="portlet light portlet-fit portlet-form ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-red"></i>
+                                        <span class="caption-subject font-red sbold uppercase">Role & User Mapping</span>
+                                    </div>
+                                   
+                                </div>
+                                <div class="portlet-body">
+                                
+                                
+                                    <!-- BEGIN FORM-->
+                                      <form  method="post" action="{% url 'Mapping:roleUserMapping' %}">
+				{% csrf_token %}
+                                        <div class="form-body">
+                                            
+                                            <div class="row">
+                                            <div class="">
+                                          
+                                                <label class="col-md-2 control-label" style="width: 130px;">Role:
+                                                   
+                                                </label>
+                                                <div class="col-md-4">
+                                                   {{ RoleUserRelationForm.role_name }} </div>
+                                            </div>
+                                            
+                                            <div class="">
+                                                <button type="submit"  id="mapping" class="btn blue btn-block" style="width:200px;">
+		Mapping </button>
+                                            </div>
+                                            </div>
+                                            
+                                          <div class="col-md-6" style="margin-top: 5%;">
+                                            <div class="row " id="academic"  style=" margin-top: 4%;">                                       
+                                              {{ RoleUserRelationForm.user_name }}
+                                             
+                                          
+                                            </div>
+                                            </div>
+                                            <div class="col-md-6" style="margin-top: 5%;">
+                            <!-- BEGIN BORDERED TABLE PORTLET-->
+                            <div class="portlet light portlet-fit ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-bubble font-dark"></i>
+                                        <span class="caption-subject font-dark bold uppercase">Mapped Users</span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="table-scrollable">
+                                        <table class="user table table-bordered table-hover" style="height:10px;">
+                                            <thead>
+                                                <tr>
+                                                    <th> Please Select Role First </th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                           
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END BORDERED TABLE PORTLET-->
+                        </div>
+                                            
+                                       
+                                            
+                                            
+                               
+                               
+                                </div>
+                            </div>
+                                    </form>
+                                    <!-- END FORM-->
+                                </div>
+                                </html>
+ 
+  
+                                
+                                {% endblock %}    
+                            </div>

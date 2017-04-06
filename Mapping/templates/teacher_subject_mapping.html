@@ -1,0 +1,331 @@
+{% extends "index.html" %}
+
+<html lang="">
+
+    
+         {%block styleBlock%}
+     <style>
+     table ,tr td{
+    border:1px solid red
+}
+tbody {
+    display:block;
+    height:190px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+table {
+    width:400px;
+}
+
+.ms-container .ms-list {
+    
+   
+    height: 190px;
+   
+}
+.portlet.light.portlet-fit>.portlet-body
+ {
+    padding: 0px 0px 0px;
+}
+
+
+.ms-container {
+    
+    width: 400px;
+}
+
+
+     </style>
+        {%endblock%}
+ {%block ScriptBlock%}
+<script>
+window.onload = function() {
+	  //YOUR JQUERY CODE
+	$(document).ready(function() {
+		console.log("hiiii")
+		
+		$("#id_class_name").change(function() {
+		class_name = document.getElementById("id_class_name").value
+		
+			var url = '/school/viewSectionDetails/';
+		viewSectionDetails(url,class_name)				
+				
+			
+		});
+		
+		$("#id_teacher_name").change(function() {
+			
+			 
+		       
+					console.log("in acedemic year ajax")
+					teacher_name = document.getElementById("id_teacher_name").value
+					console.log(teacher_name)		
+							
+					var url = '/school/viewMultiselectTeacherSubjectList/';
+					viewMultiselectTeacherSubjectList(url,teacher_name)
+				});
+		
+
+		
+		 $('#id_subject_name').multiSelect({
+		      afterSelect: function(values){
+		        //alert("Select value: "+values);
+		      },
+		      afterDeselect: function(values){
+		        //alert("Deselect value: "+values);
+		      }
+		    }); 
+		
+	});
+function viewSectionDetails(url ,class_name) {
+	    
+		$.ajax({
+			url : url,
+			type : "GET",
+			data : {
+				class_name : class_name
+			},
+		})
+
+		.done(
+				function(data) {
+					console.log(data);
+					
+					console.log("in done..............")
+					
+					/*$('#id_section_name').empty();
+						$('#id_section_name').append(
+								'<option value="">Please select</option>');*/
+				        
+								
+				        for (var i = 0; i < data.length; i++)
+
+						{
+
+							/* console.log(data[i].apartment_flat_no) */
+							/* $('#id_apartment_flat_no').empty(); */
+							
+							$('#id_section_name').append(
+									'<option value="'+data[i].id+'">'
+											+ data[i].section + '</option>')
+							
+							/* $('#id_apartment_flat_no1-'+(i)+'-apartment_flat_no').val(data[i].apartment_flat_no);
+							 */
+						}
+								$("#id_section_name option").each(function(){
+									  $(this).siblings("[value='"+ this.value+"']").remove();
+									})
+						
+
+				});
+	  
+	
+	}
+	  
+	function viewMultiselectTeacherSubjectList(url,teacher_name) {
+		 
+		 
+	      
+		$.ajax({
+			url : url,
+			type : "GET",
+			data : {
+				teacher_name : teacher_name
+			},
+		})
+		.done(
+				function(data) {
+					
+					console.log(data)
+					
+					$('.subject').empty();
+					$('.ms-selectable .ms-list li').show();
+					$('.ms-list li').each(function(i){
+					    value2 = $(this).text();
+					    
+					    for (var i = 0; i < data.length; i++) {
+							
+							
+					    	if (data[i].subject == value2)
+					    		
+					    		{
+					    		
+					    		if($(this).text(value2)){
+					    			$(this).hide();
+					    		}
+					    		
+					    		
+					    		}
+							
+						}
+
+					   
+					});
+					
+					for (var i = 0; i < data.length; i++) {
+						
+						
+						$(".subject").append('<tr><td>' +  data[i].subject + '</td></tr>');	
+						
+					}
+
+
+
+				});
+		
+		
+	}
+	
+	}
+	
+	
+	
+</script>
+{%endblock%}  
+{% block content %}
+<body>
+ 
+ <div class="page-bar" style="margin-bottom: 1px;">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="{% url 'Registration:home' %}">Home</a> 
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                
+                                <a href="{% url 'Registration:academic_school_view' %}">   Academic & School</a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            
+                            <li>
+                                <span>Teacher/Subject Mapping</span>
+                            </li>
+                        </ul>
+                        
+                    </div> 
+
+
+    <div class="portlet light portlet-fit portlet-form ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-red"></i>
+                                        <span class="caption-subject font-red sbold uppercase">Teacher & Subject Mapping</span>
+                                    </div>
+                                   
+                                </div>
+                                <div class="portlet-body">
+                                
+                                
+                                    <!-- BEGIN FORM-->
+                                      <form  method="post" action="">
+				{% csrf_token %}
+                                        <div class="form-body">
+                                            
+                                            <div class="row">
+                                            
+                                          <div class="col-md-3">
+                                               <h4>Class:</h4>
+                                      <div>{{ TeacherSubjectRelationForm.class_name }} </div>
+                                            
+                                          </div>
+                                          
+                                          <div class="col-md-3">
+                                                <h4>Section:</h4>
+                                             <div>{{ TeacherSubjectRelationForm.section_name }} </div>
+                                           
+                                          </div>
+                                          
+                                          <div class="col-md-3">
+                                                <h4> Teacher Name:</h4>
+                                               <div>{{ TeacherSubjectRelationForm.teacher_name }} </div>
+                                            
+                                          </div>
+                                          
+                                          <div class="col-md-3">
+                                                <h4>Assistant Teacher:</h4>
+                                            <div>{{ TeacherSubjectRelationForm.assistant_teacher }} </div>
+                                            </div>
+                                            
+                                           
+
+                                            </div>
+                                            </div>
+                                            
+                                         
+
+                          <div class="col-md-6" style="margin-top: 1%;">
+                            <!-- BEGIN BORDERED TABLE PORTLET-->
+                            <div class="portlet light portlet-fit ">
+                                <div class="portlet-title" style="border-bottom:0px;">
+                                    <div class="caption" style="margin-left:-20px;">
+                                        <i class="icon-bubble font-dark"></i>
+                                        <span class="caption-subject font-dark bold uppercase">Mapped Subjects</span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="table-scrollable">
+                                        <table class="subject table table-bordered table-hover" style="height:10px;">
+                                            <thead>
+                                                <tr>
+                                                    <th> Please Select Teacher First </th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                           
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END BORDERED TABLE PORTLET-->
+                        </div>
+                                            
+                              <div class="col-md-6" style="margin-top: 5.5%;">
+	                                            <div class="row " id="academic"  style=" margin-top: 4%; margin-left: 100px;">                                       
+	                                              {{ TeacherSubjectRelationForm.subject_name }}
+	                                             
+	                                          
+	                                            </div>
+                               </div>
+
+                                <div class="form-actions">
+                                            <div class="row">
+                                                <div class="col-md-offset-3 col-md-9 center-block">
+                                                    
+                                               <br>
+
+                                                <button type="submit"  id="mapping" class="btn blue btn-block" style="margin-left: 50%; margin-right: 50%; width: 35%;">
+                                               Mapping </button>
+                                         
+
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                       
+                                            
+                                            
+                               
+                               
+                                </div>
+                            </div>
+                                    </form>
+                                    <!-- END FORM-->
+                                </div>
+                                </html>
+ 
+  
+                                
+                                {% endblock %}    
+                            </div>

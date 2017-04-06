@@ -1,0 +1,253 @@
+{% extends "index.html" %}
+
+<html lang="">
+
+    
+         {%block styleBlock%}
+     <style>
+     table ,tr td{
+    border:1px solid red
+}
+tbody {
+    display:block;
+    height:190px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+table {
+    width:400px;
+}
+
+.ms-container .ms-list {
+    
+   
+    height: 190px;
+   
+}
+.portlet.light.portlet-fit>.portlet-body
+ {
+    padding: 0px 0px 0px;
+}
+
+
+.ms-container {
+    
+    width: 400px;
+}
+     </style>
+        {%endblock%}
+ {%block ScriptBlock%}
+<script>
+window.onload = function() {
+      //YOUR JQUERY CODE
+    $(document).ready(function() {
+        console.log("hiiii")
+        
+        
+        
+        $("#id_supervisor_name").change(function() {
+            
+             
+               
+                    console.log("in acedemic year ajax")
+                    supervisor_name = document.getElementById("id_supervisor_name").value
+                    console.log(supervisor_name)        
+                            
+                    var url = '/school/viewMultiselectSupervisorClassList/';
+                    viewMultiselectSupervisorClassList(url,supervisor_name)
+                });
+        
+         $('#id_class_name').multiSelect({
+              afterSelect: function(values){
+                //alert("Select value: "+values);
+              },
+              afterDeselect: function(values){
+                //alert("Deselect value: "+values);
+              }
+            }); 
+    });
+
+    function viewMultiselectSupervisorClassList(url,supervisor_name) {
+         
+         
+          
+        $.ajax({
+            url : url,
+            type : "GET",
+            data : {
+                supervisor_name : supervisor_name
+            },
+        })
+
+
+        .done(
+                function(data) {
+                    console.log(data)
+                    $('.class').empty();
+                    $('.ms-selectable .ms-list li').show();
+                    $('.ms-list li').each(function(i){
+                        value2 = $(this).text();
+                        
+                        for (var i = 0; i < data.length; i++) {
+                            
+                            
+                            if (data[i].class_name == value2)
+                                
+                                {
+                                
+                                if($(this).text(value2)){
+                                    $(this).hide();
+                                }
+                                
+                                
+                                }
+                            
+                        }
+
+                       
+                    });
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        
+                        
+                        $(".class").append('<tr><td>' +  data[i].class_name + '</td></tr>');    
+                        
+                    }
+
+
+                });
+    }
+
+}
+</script>
+{%endblock%}  
+{% block content %}
+<body>
+
+    <div class="page-bar" style="margin-bottom: 1px;">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="{% url 'Registration:home' %}">Home</a> 
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                
+                                <a href="{% url 'Registration:academic_school_view' %}">   Academic & School</a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            
+                            <li>
+                                <span>Supervisor/Class Mapping</span>
+                            </li>
+                        </ul>
+                        
+    </div> 
+ 
+
+
+    <div class="portlet light portlet-fit portlet-form ">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-red"></i>
+                                        <span class="caption-subject font-red sbold uppercase">Supervisor & Class Mapping</span>
+                                    </div>
+                                   
+                                </div>
+                                <div class="portlet-body">
+                                
+                                
+                                    <!-- BEGIN FORM-->
+                                      <form  method="post" action="{% url 'Mapping:supervisorClassMapping' %}">
+                {% csrf_token %}
+                                        <div class="form-body">
+                                            
+                                            <div class="row">
+                                            <div class="">
+                                          
+                                                <label class="col-md-2 control-label" style="width: 130px;">Supervisor:
+                                                   
+                                                </label>
+                                                <div class="col-md-4" class="page-bar" style="margin-bottom: 10px;">
+                                                   {{ SupervisorClassRelationForm.supervisor_name  }} </div>
+                                            </div>
+                                          
+                                            </div>
+                                         
+                            <div class="col-md-6" style="margin-top: 1%;">
+                            <!-- BEGIN BORDERED TABLE PORTLET-->
+                            <div class="portlet light portlet-fit ">
+                                <div class="portlet-title" style="border-bottom:0px;">
+                                    <div class="caption" style="margin-left:-35px;">
+                                        <i class="icon-bubble font-dark"></i>
+                                        <span class="caption-subject font-dark bold uppercase">Mapped Class</span>
+                                    </div>
+                                    
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="table-scrollable">
+                                        <table class="class table table-bordered table-hover" style="height:10px;">
+                                            <thead>
+                                                <tr>
+                                                    <th> Please Select Class First </th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                           
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END BORDERED TABLE PORTLET-->
+                        </div>
+                         
+                            
+                                          <div class="col-md-6" style="margin-top: 5.5%;">
+                                            <div class="row " id="academic"  style=" margin-top: 4%; margin-left: 100px;">                                       
+                                              {{ SupervisorClassRelationForm.class_name }}
+                                             
+                                          
+                                            </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                             <div class="form-actions">
+                                            <div class="row">
+                                                <div class="col-md-offset-3 col-md-9 center-block">
+                                                    
+                                               <br>
+
+                                          
+                                         
+                                                <button type="submit"  id="mapping" class="btn blue btn-block" style="margin-left: 50%; margin-right: 50%; width:35%;">
+            Mapping </button>
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>        
+                                       
+                                            
+                                            
+                               
+                               
+                                </div>
+                            </div>
+                                    </form>
+                                    <!-- END FORM-->
+                                </div>
+                                </html>
+ 
+  
+                                
+                                {% endblock %}    
+                            </div>
